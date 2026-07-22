@@ -1,0 +1,244 @@
+{
+  "type": "FeatureCollection",
+  "properties": {
+    "name": "仓库运输路网",
+    "description": "工厂AGV机器人预设运输路线，包含零件存储区、装配区和发货区",
+    "version": "1.0",
+    "created": "2026-07-03",
+    "coordinate_system": "map",
+    "units": "meters"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [2.0, 3.0, 0.0] },
+      "properties": { "id": "1", "name": "零件入库点", "type": "node", "zone": "receiving" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [5.0, 3.0, 0.0] },
+      "properties": { "id": "2", "name": "存储区A入口", "type": "node", "zone": "storage_a" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [8.0, 3.0, 0.0] },
+      "properties": { "id": "3", "name": "存储区B入口", "type": "node", "zone": "storage_b" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [11.0, 3.0, 0.0] },
+      "properties": { "id": "4", "name": "装配区入口", "type": "node", "zone": "assembly" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [5.0, 0.0, 0.0] },
+      "properties": { "id": "5", "name": "存储区A-1", "type": "node", "zone": "storage_a" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [8.0, 0.0, 0.0] },
+      "properties": { "id": "6", "name": "存储区B-1", "type": "node", "zone": "storage_b" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [11.0, 0.0, 0.0] },
+      "properties": { "id": "7", "name": "装配工位1", "type": "node", "zone": "assembly" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [5.0, -3.0, 0.0] },
+      "properties": { "id": "8", "name": "存储区A-2", "type": "node", "zone": "storage_a" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [8.0, -3.0, 0.0] },
+      "properties": { "id": "9", "name": "存储区B-2", "type": "node", "zone": "storage_b" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [11.0, -3.0, 0.0] },
+      "properties": { "id": "10", "name": "装配工位2", "type": "node", "zone": "assembly" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [2.0, -3.0, 0.0] },
+      "properties": { "id": "11", "name": "打包区", "type": "node", "zone": "packing" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [2.0, 0.0, 0.0] },
+      "properties": { "id": "12", "name": "检验区", "type": "node", "zone": "inspection" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [2.0, -6.0, 0.0] },
+      "properties": { "id": "13", "name": "发货区", "type": "node", "zone": "shipping" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [5.0, -6.0, 0.0] },
+      "properties": { "id": "14", "name": "暂存区", "type": "node", "zone": "staging" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [8.0, -6.0, 0.0] },
+      "properties": { "id": "15", "name": "废料区", "type": "node", "zone": "waste" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [11.0, -6.0, 0.0] },
+      "properties": { "id": "16", "name": "维护区", "type": "node", "zone": "maintenance" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [14.0, 3.0, 0.0] },
+      "properties": { "id": "17", "name": "办公区入口", "type": "node", "zone": "office" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [14.0, 0.0, 0.0] },
+      "properties": { "id": "18", "name": "会议室", "type": "node", "zone": "office" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [14.0, -3.0, 0.0] },
+      "properties": { "id": "19", "name": "休息区", "type": "node", "zone": "office" }
+    },
+
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[2.0, 3.0], [5.0, 3.0]] },
+      "properties": { "id": "e1", "start_node": "1", "end_node": "2", "type": "edge", "name": "入库主通道", "bidirectional": true, "zone": "main" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[5.0, 3.0], [8.0, 3.0]] },
+      "properties": { "id": "e2", "start_node": "2", "end_node": "3", "type": "edge", "name": "存储区通道", "bidirectional": true, "zone": "main" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[8.0, 3.0], [11.0, 3.0]] },
+      "properties": { "id": "e3", "start_node": "3", "end_node": "4", "type": "edge", "name": "装配区通道", "bidirectional": true, "zone": "main" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[5.0, 3.0], [5.0, 0.0]] },
+      "properties": { "id": "e4", "start_node": "2", "end_node": "5", "type": "edge", "name": "A区纵向道", "bidirectional": true, "zone": "storage_a" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[8.0, 3.0], [8.0, 0.0]] },
+      "properties": { "id": "e5", "start_node": "3", "end_node": "6", "type": "edge", "name": "B区纵向道", "bidirectional": true, "zone": "storage_b" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[11.0, 3.0], [11.0, 0.0]] },
+      "properties": { "id": "e6", "start_node": "4", "end_node": "7", "type": "edge", "name": "装配纵向道", "bidirectional": true, "zone": "assembly" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[5.0, 0.0], [8.0, 0.0]] },
+      "properties": { "id": "e7", "start_node": "5", "end_node": "6", "type": "edge", "name": "中部横通道", "bidirectional": true, "zone": "main" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[8.0, 0.0], [11.0, 0.0]] },
+      "properties": { "id": "e8", "start_node": "6", "end_node": "7", "type": "edge", "name": "中部横通道2", "bidirectional": true, "zone": "main" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[5.0, 0.0], [5.0, -3.0]] },
+      "properties": { "id": "e9", "start_node": "5", "end_node": "8", "type": "edge", "name": "A区下通道", "bidirectional": true, "zone": "storage_a" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[8.0, 0.0], [8.0, -3.0]] },
+      "properties": { "id": "e10", "start_node": "6", "end_node": "9", "type": "edge", "name": "B区下通道", "bidirectional": true, "zone": "storage_b" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[11.0, 0.0], [11.0, -3.0]] },
+      "properties": { "id": "e11", "start_node": "7", "end_node": "10", "type": "edge", "name": "装配下通道", "bidirectional": true, "zone": "assembly" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[5.0, -3.0], [8.0, -3.0]] },
+      "properties": { "id": "e12", "start_node": "8", "end_node": "9", "type": "edge", "name": "下部横通道", "bidirectional": true, "zone": "main" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[8.0, -3.0], [11.0, -3.0]] },
+      "properties": { "id": "e13", "start_node": "9", "end_node": "10", "type": "edge", "name": "下部横通道2", "bidirectional": true, "zone": "main" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[2.0, 3.0], [2.0, 0.0]] },
+      "properties": { "id": "e14", "start_node": "1", "end_node": "12", "type": "edge", "name": "左区纵通道", "bidirectional": true, "zone": "main" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[2.0, 0.0], [2.0, -3.0]] },
+      "properties": { "id": "e15", "start_node": "12", "end_node": "11", "type": "edge", "name": "左区下通道", "bidirectional": true, "zone": "main" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[2.0, -3.0], [5.0, -3.0]] },
+      "properties": { "id": "e16", "start_node": "11", "end_node": "8", "type": "edge", "name": "打包到A区", "bidirectional": true, "zone": "main" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[2.0, -3.0], [2.0, -6.0]] },
+      "properties": { "id": "e17", "start_node": "11", "end_node": "13", "type": "edge", "name": "发货通道", "bidirectional": true, "zone": "shipping" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[2.0, -6.0], [5.0, -6.0]] },
+      "properties": { "id": "e18", "start_node": "13", "end_node": "14", "type": "edge", "name": "底部横通道", "bidirectional": true, "zone": "main" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[5.0, -6.0], [8.0, -6.0]] },
+      "properties": { "id": "e19", "start_node": "14", "end_node": "15", "type": "edge", "name": "底部横通道2", "bidirectional": true, "zone": "main" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[8.0, -6.0], [11.0, -6.0]] },
+      "properties": { "id": "e20", "start_node": "15", "end_node": "16", "type": "edge", "name": "底部横通道3", "bidirectional": true, "zone": "main" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[5.0, -3.0], [5.0, -6.0]] },
+      "properties": { "id": "e21", "start_node": "8", "end_node": "14", "type": "edge", "name": "A区到底部", "bidirectional": true, "zone": "main" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[8.0, -3.0], [8.0, -6.0]] },
+      "properties": { "id": "e22", "start_node": "9", "end_node": "15", "type": "edge", "name": "B区到底部", "bidirectional": true, "zone": "main" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[11.0, -3.0], [11.0, -6.0]] },
+      "properties": { "id": "e23", "start_node": "10", "end_node": "16", "type": "edge", "name": "装配到底部", "bidirectional": true, "zone": "main" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[11.0, 3.0], [14.0, 3.0]] },
+      "properties": { "id": "e24", "start_node": "4", "end_node": "17", "type": "edge", "name": "办公区通道", "bidirectional": true, "zone": "office" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[14.0, 3.0], [14.0, 0.0]] },
+      "properties": { "id": "e25", "start_node": "17", "end_node": "18", "type": "edge", "name": "办公纵向道", "bidirectional": true, "zone": "office" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[14.0, 0.0], [14.0, -3.0]] },
+      "properties": { "id": "e26", "start_node": "18", "end_node": "19", "type": "edge", "name": "办公下通道", "bidirectional": true, "zone": "office" }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "LineString", "coordinates": [[14.0, -3.0], [11.0, -3.0]] },
+      "properties": { "id": "e27", "start_node": "19", "end_node": "10", "type": "edge", "name": "办公到装配", "bidirectional": true, "zone": "main" }
+    }
+  ]
+}

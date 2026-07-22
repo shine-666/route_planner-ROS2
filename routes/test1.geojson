@@ -1,0 +1,112 @@
+{
+  "type": "FeatureCollection",
+  "properties": {
+    "name": "未命名路网",
+    "description": "",
+    "version": "1.0"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.02,
+          0.05,
+          0.0
+        ]
+      },
+      "properties": {
+        "id": "1",
+        "name": "1",
+        "type": "node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.76,
+          0.11,
+          0.0
+        ]
+      },
+      "properties": {
+        "id": "2",
+        "name": "2",
+        "type": "node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          0.68,
+          0.97,
+          0.0
+        ]
+      },
+      "properties": {
+        "id": "3",
+        "name": "3",
+        "type": "node"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            0.02,
+            0.05,
+            0.0
+          ],
+          [
+            0.76,
+            0.11,
+            0.0
+          ]
+        ]
+      },
+      "properties": {
+        "id": "e1",
+        "start_node": "1",
+        "end_node": "2",
+        "type": "edge",
+        "name": "1->2",
+        "bidirectional": true,
+        "weight": 0.7424
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            0.76,
+            0.11,
+            0.0
+          ],
+          [
+            0.68,
+            0.97,
+            0.0
+          ]
+        ]
+      },
+      "properties": {
+        "id": "e2",
+        "start_node": "2",
+        "end_node": "3",
+        "type": "edge",
+        "name": "2->3",
+        "bidirectional": true,
+        "weight": 0.8637
+      }
+    }
+  ]
+}

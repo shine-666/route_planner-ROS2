@@ -1,0 +1,76 @@
+# 路网导航节点参数配置
+route_navigator_node:
+  ros__parameters:
+    # GeoJSON路网文件路径（留空自动查找包内routes/目录）
+    route_file: ""
+
+    # 地图坐标系
+    map_frame: "map"
+
+    # 路径规划算法: "astar" 或 "dijkstra"
+    algorithm: "astar"
+
+    # 可视化发布频率 (Hz)
+    publish_rate: 1.0
+
+    # RViz标记大小
+    marker_scale: 0.15
+
+    # 坐标到路网节点的最大吸附距离（米）
+    # 超过此距离认为"不在路网附近"，走透传自由导航
+    snap_distance: 3.0
+
+    # 判断"在路网上"的距离阈值（米）
+    # 到最近路网边的距离小于此值认为在路网上
+    on_graph_threshold: 0.5
+
+    # 是否启用路网约束（false则退化为标准Nav2自由导航）
+    enabled: true
+
+    # 机器人base坐标系名称
+    robot_base_frame: "base_link"
+
+    # 路网密集化步长（米）
+    # 越小约束越强，但航点越多导航越慢；建议0.1~0.3
+    dense_step: 0.2
+
+    # planner_server路径规划超时（秒）
+    planner_timeout: 10.0
+
+    # controller_server路径跟踪超时（秒）
+    # 路网段可能较长（7m约需30-40秒），建议给足时间
+    controller_timeout: 120.0
+
+    # 是否允许路网外导航（三段式：上路->路网->下路）
+    # false=纯路网模式（默认）；true=允许自由导航上下路
+    allow_offroad: false
+
+    # 障碍物动态重规划（路网段行驶中遇障自动改道）
+    # 默认开启；设 false 可退回纯路网行为（不做障碍检测）
+    replan_enabled: true
+    # 单点代价值超过该阈值记为“高代价点”（0~255，膨胀障碍约 253，致死 254）
+    cost_threshold: 60
+    # 前方 cost_lookahead 内累计高代价点达到该数即触发重规划。
+    path_obstacles_threshold: 2
+    # 障碍监控频率（Hz）
+    monitor_hz: 2.0
+    # 仅检查机器人前方该距离(米)内的路径点
+    cost_lookahead: 1.5
+    # 订阅的全局代价地图话题（nav2_msgs/Costmap）
+    # Nav2 Humble 中 /global_costmap/costmap 是 nav_msgs/OccupancyGrid（0~100），
+    # 而 /global_costmap/costmap_raw 才是内部 0~255 的 nav2_msgs/Costmap。
+    # 本节点按后者解析，因此默认订阅 costmap_raw；若命名带前缀请相应修改。
+    costmap_topic: "/global_costmap/costmap_raw"
+    # 重规划时是否先自由导航（DWB，可倒车）接驳回锚点节点；
+    # false 则路网段直接从机器人当前位姿接续（可能倒车，RPP 不擅长）
+    replan_reverse_via_freenav: true
+    # 单次导航最多重规划次数，防止极端情况下无限重规划
+    replan_max_attempts: 5
+    # 重规划触发模式（总开关为上面的 replan_enabled，false 时都关闭）：
+    #  - "both"   : 代价地图监控触发 + 控制器中止兜底触发（默认）
+    #  - "monitor": 仅代价地图监控触发（不靠控制器中止兜底）
+    #  - "failure": 仅控制器中止兜底触发（不做代价地图在线检测）
+    replan_trigger_mode: "both"
+    # failure 通道的向后兼容开关：仅当 replan_trigger_mode 含 "failure" 时生效；
+    # 设 false 可单独关掉控制器中止兜底，保留监控触发。
+    replan_on_failure: true
