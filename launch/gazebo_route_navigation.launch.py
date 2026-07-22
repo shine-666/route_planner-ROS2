@@ -1,22 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-仿真环境路网导航启动文件（独立，不依赖 patrolbot_navigation2）
+仿真环境路网导航启动文件
 
 启动Nav2导航栈（不含bt_navigator）+ 路网约束导航。
-Gazebo仿真需另行启动：ros2 launch patrolbot_description gazebo_sim.launch.py
-
-核心架构：
-  启动Nav2底层服务（map_server, amcl, planner_server, controller_server等）
-  不启动bt_navigator
-  route_navigator_node 注册 /navigate_to_pose，拦截RViz目标
-  route_navigator_node 内部直接调用 planner_server + controller_server
-
-  完全兼容ROS2 Humble，不依赖 patrolbot_navigation2。
-
-使用方法：
-  ros2 launch route_planner gazebo_route_navigation.launch.py
-
+Gazebo仿真需另行启动
+启动Nav2底层服务（map_server, amcl, planner_server, controller_server等）
+不启动bt_navigator
+route_navigator_node 注册 /navigate_to_pose，拦截RViz目标
+route_navigator_node 内部直接调用 planner_server + controller_server
 可选参数：
   route_file:=<路网GeoJSON>    默认使用内置 warehouse_routes.geojson
   map:=<地图文件>              默认使用 route_planner 的 sim_room.yaml
@@ -182,8 +174,7 @@ def generate_launch_description():
     )
 
     # ================================================================
-    #  路网导航节点（注册 /navigate_to_pose 拦截RViz目标）
-    #  直接调用 planner_server + controller_server，无需 bt_navigator
+    #  路网导航节点
     # ================================================================
     route_navigator = Node(
         package='route_planner',

@@ -1,21 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-路网导航一体化启动文件（实体机）
-
-一个命令启动全部：
-  机器人底层驱动 + 激光雷达 + Nav2导航栈（不含bt_navigator）+ 路网约束导航
-
-核心架构：
-  启动Nav2底层服务（map_server, amcl, planner_server, controller_server等）
-  不启动bt_navigator
-  route_navigator_node 注册 /navigate_to_pose，拦截RViz目标
-  route_navigator_node 内部直接调用 planner_server + controller_server
-
-  完全兼容ROS2 Humble。
-
-使用方法：
-  ros2 launch route_planner route_navigation.launch.py
+启动Nav2底层服务（map_server, amcl, planner_server, controller_server等）
+不启动bt_navigator
+route_navigator_node 注册 /navigate_to_pose，拦截RViz目标
+route_navigator_node 内部直接调用 planner_server + controller_server
 
 可选参数：
   map:=<地图文件>            默认使用 mycar_nav2 的 MYCAR.yaml
@@ -201,8 +190,7 @@ def generate_launch_description():
     )
 
     # ================================================================
-    #  4. 路网导航节点（注册 /navigate_to_pose 拦截RViz目标）
-    #  直接调用 planner_server + controller_server，无需 bt_navigator
+    #  4. 路网导航节点
     # ================================================================
     route_navigator = Node(
         package='route_planner',

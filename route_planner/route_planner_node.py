@@ -5,7 +5,7 @@
 
 核心设计：三段式分段导航
   1. 上路（自由导航）-> planner_server 规划路径 + controller_server 跟踪
-  2. 路网（逐节点跟随）-> 直接构建路径 + controller_server.FollowPath（跳过 planner）
+  2. 路网（逐节点跟随）-> 直接构建路径 + controller_server.FollowPath
   3. 下路（自由导航）-> planner_server 规划路径 + controller_server 跟踪
 
 架构：
@@ -66,15 +66,11 @@ class RouteNavigatorNode(Node):
         self.declare_parameter('monitor_hz', 2.0)
         # 仅检查机器人前方该距离(米)内的路径点
         self.declare_parameter('cost_lookahead', 1.5)
-        # Nav2 Humble: /global_costmap/costmap 是 nav_msgs/OccupancyGrid(0~100)，
-        # 内部 0~255 的 nav2_msgs/Costmap 在 /global_costmap/costmap_raw。
         self.declare_parameter('costmap_topic', '/global_costmap/costmap_raw')
         self.declare_parameter('replan_reverse_via_freenav', True)
         self.declare_parameter('replan_on_failure', True)
-        # 单次导航最多重规划次数，防止极端情况下无限重规划
+        # 单次导航最多重规划次数
         self.declare_parameter('replan_max_attempts', 5)
-        # 重规划触发模式：'both'=代价地图监控+控制器中止兜底都触发（默认）；
-        # 'monitor'=仅代价地图监控触发；'failure'=仅控制器中止兜底触发。
         self.declare_parameter('replan_trigger_mode', 'both')
 
         self.map_frame = self.get_parameter('map_frame').value
@@ -100,8 +96,6 @@ class RouteNavigatorNode(Node):
         self.replan_reverse_via_freenav = self.get_parameter('replan_reverse_via_freenav').value
         self.replan_on_failure = self.get_parameter('replan_on_failure').value
         self.replan_max_attempts = self.get_parameter('replan_max_attempts').value
-        # 由触发模式推导两组布尔开关（replan_enabled 为总开关；
-        # replan_on_failure 作为 failure 通道的向后兼容开关，设 false 可单独关掉兜底）。
         self.replan_trigger_mode = self.get_parameter('replan_trigger_mode').value
         _mode = self.replan_trigger_mode
         self._trigger_monitor = bool(self.replan_enabled and _mode in ('monitor', 'both'))
@@ -150,7 +144,7 @@ class RouteNavigatorNode(Node):
             callback_group=self.callback_group
         )
 
-        self._active_nav = None              # 当前正在执行的 nav goal（同一时刻仅一个）
+        self._active_nav = None              # 当前正在执行的 nav goal
         self._pending_nav = None             # 抢占后等待串行启动的新 nav goal
         self._active_compute_goal = None    # 正在执行的 ComputePathToPose 内层 goal
         self._active_follow_goal = None     # 正在执行的 FollowPath(controller) 内层 goal
@@ -161,7 +155,7 @@ class RouteNavigatorNode(Node):
         self.route_path_pub = self.create_publisher(NavPath, 'route_path', 10)
 
         # ---- 话题入口（RViz “2D Goal Pose” 工具下发目标）----
-        # 同时订阅两个话题，无论用默认 /goal_pose 还是 /route_planner/goal 都能收到。
+        # 同时订阅两个话题 /goal_pose  /route_planner/goal 
         self._goal_pose_sub = self.create_subscription(
             PoseStamped, 'goal_pose', self._on_goal_pose, 10,
             callback_group=self.callback_group)
@@ -179,7 +173,7 @@ class RouteNavigatorNode(Node):
         self._nav_active = False              # 是否正在执行分段导航
         self._current_task_type = ''          # 当前执行段类型('free'/'network')
         self._goal_node_id = None             # 本次导航的目标路网节点
-        self._goal_yaw = 0.0                  # 用户设定的目标朝向
+        self._goal_yaw = 0.0                  # 设定的目标朝向
         self._blocked_seg_start = None        # 堵塞边起点节点
         self._blocked_seg_next = None         # 堵塞边终点节点
         self._dense_node_ids = []             # current_dense_poses 各点所属节点 id
@@ -189,7 +183,7 @@ class RouteNavigatorNode(Node):
         self._costmap_warn_ts = 0.0           # 上次告警时间戳(每10秒重复提醒)
         self._costmap_received = False        # 是否已收到过代价地图
 
-        # 订阅全局代价地图（仅 monitor 路径需要；failure 模式不订阅）
+        # 订阅全局代价地图
         self._costmap_sub = None
         if self._trigger_monitor:
             self._costmap_sub = self.create_subscription(
@@ -1079,11 +1073,8 @@ class RouteNavigatorNode(Node):
     def _load_route_graph(self):
         route_file = self.get_parameter('route_file').value
         if route_file:
-            # 支持 ~ / $HOME 等写法（bash 在 --ros-args 赋值中不会展开 ~）
             route_file = os.path.expanduser(os.path.expandvars(route_file))
         if not route_file or not os.path.exists(route_file):
-            # 兜底：优先用 ament 包共享目录，
-            # colcon 安装后 routes/warehouse_routes.geojson 就在这里。
             possible = []
             try:
                 from ament_index_python.packages import get_package_share_directory
@@ -1092,7 +1083,6 @@ class RouteNavigatorNode(Node):
                     os.path.join(share_dir, 'routes', 'warehouse_routes.geojson'))
             except Exception:
                 pass
-            # 旧兜底（源码/未安装场景）作为补充
             pkg_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             possible.append(os.path.join(pkg_dir, 'routes', 'warehouse_routes.geojson'))
             possible.append(os.path.join(pkg_dir, '..', 'routes', 'warehouse_routes.geojson'))
@@ -1224,7 +1214,7 @@ class RouteNavigatorNode(Node):
                     ux, uy = dx / length, dy / length
                     yaw = math.atan2(dy, dx)
                     cy, sy = math.cos(yaw * 0.5), math.sin(yaw * 0.5)
-                    # 沿边均匀放置小箭头：短边1个（中点），长边2~3个
+                    # 沿边均匀放置小箭头
                     arrow_span = min(length * 0.35, 1.5)
                     num_arrows = max(1, min(3, int(length / arrow_span)))
                     for ai in range(num_arrows):
@@ -1273,7 +1263,6 @@ class RouteNavigatorNode(Node):
             self.route_path_pub.publish(path_msg)
 
     def _send_feedback(self, goal_handle, text, progress):
-        # 仅对仍活跃的目标发布反馈，避免向已终止/被抢占目标推送 → RViz 空指针风险
         if not goal_handle.is_active:
             return
         feedback = NavigateToPose.Feedback()
