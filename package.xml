@@ -4,7 +4,7 @@
   <name>route_planner</name>
   <version>2.0.0</version>
   <description>路网约束导航功能包 - 与标准Nav2交互一致的路网规划导航。支持GeoJSON路网定义、A*/Dijkstra路径规划、自动上路/下路、RViz可视化。</description>
-  <maintainer email="wheeltec@wheeltec.net">Wheeltec</maintainer>
+  <maintainer email="3095562973@qq.com">30955</maintainer>
   <license>Apache-2.0</license>
 
   <depend>rclpy</depend>

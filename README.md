@@ -29,21 +29,43 @@ source install/setup.bash
 
 先启动已有 Nav2 栈（map_server + amcl + planner_server + controller_server，**不启动 bt_navigator**），再启动本包：
 
+具体可参考 `gazebo_route_navigation.launch.py` 和 `route_navigation.launch.py`
+
 ```bash
 ros2 launch route_planner route_planner.launch.py \
   route_file:=/path/to/routes.geojson \
   algorithm:=astar
 ```
 
-此 launch 仅注册路网节点 `route_planner_node`，不自带 Nav2。
+此 launch 仅注册路网节点 `route_planner_node`
 
-**方式二：Gazebo 仿真（自带 Nav2 全栈）**
+**方式二：Gazebo 仿真**
 
-`gazebo_route_navigation.launch.py` 会自动拉起完整 Nav2 栈（map_server / amcl / planner_server / controller_server 等，不含 bt_navigator）+ 路网节点 `route_navigator_node`，默认 `use_sim_time:=true`：
+推荐使用 [fishros/ros2_patrol_robot](https://github.com/fishros/ros2_patrol_robot) 项目中的 `fishbot_description` 包作为仿真平台，已验证可用。
+
+**步骤 1**：克隆 fishros 仿真项目并编译
 
 ```bash
-# 先启动 Gazebo 仿真中的机器人本体（URDF + 激光 /scan + 里程计 /odom），例如：
-#   ros2 launch <你的机器人包> gazebo_sim.launch.py
+cd <你的工作区>/src
+git clone https://github.com/fishros/ros2_patrol_robot.git
+cd <你的工作区>
+colcon build --packages-select fishbot_description
+source install/setup.bash
+```
+
+**步骤 2**：启动 Gazebo 仿真（另开一个终端）
+
+```bash
+ros2 launch fishbot_description gazebo.launch.py
+```
+
+该命令会启动 Gazebo 世界、FishBot 机器人模型（URDF）、激光雷达（`/scan`）和里程计（`/odom`）。
+
+**步骤 3**：启动路网导航（再开一个终端）
+
+`gazebo_route_navigation.launch.py` 会自动拉起完整 Nav2 栈 + 路网节点 `route_navigator_node`，默认 `use_sim_time:=true`：
+
+```bash
 ros2 launch route_planner gazebo_route_navigation.launch.py \
   route_file:=/path/to/routes.geojson \
   allow_offroad:=true
@@ -51,7 +73,9 @@ ros2 launch route_planner gazebo_route_navigation.launch.py \
 
 默认使用包内 `maps/sim_room.yaml` 地图、`config/nav2_params_sim.yaml` 参数、`routes/warehouse_routes.geojson` 路网。
 
-**方式三：实车导航（mycar 整车）**
+> 若使用其他机器人平台，只需保证仿真节点发布 `/scan`、`/odom` 和 `map → odom → base_link` TF 链即可。
+
+**方式三：实车导航**
 
 `route_navigation.launch.py` 面向实车，会拉起底盘驱动、激光雷达、摄像头以及完整 Nav2 栈 + 路网节点：
 
@@ -96,6 +120,11 @@ python3 src/route_planner/route_editor.py \
   --map src/route_planner/maps/sim_room.pgm \
   --yaml src/route_planner/maps/sim_room.yaml
 ```
+或者
+```bash
+python3 src/route_planner/route_editor.py
+```
+可在图形界面打开地图和路网文件
 
 操作：点击添加节点 | 依次点两节点添加边 | 拖拽移动 | Delete 删除 | 双击编辑名称 | Ctrl+S 保存
 
