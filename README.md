@@ -41,19 +41,19 @@ ros2 launch route_planner route_planner.launch.py \
 
 **方式二：Gazebo 仿真**
 
-推荐使用 [fishros/ros2_patrol_robot](https://github.com/fishros/ros2_patrol_robot) 项目中的 `fishbot_description` 包作为仿真平台，已验证可用。
+推荐使用 [fishros/ros2_patrol_robot](https://github.com/fishros/ros2_patrol_robot) 项目中的 `fishbot_description` 包进行仿真，已验证可用。
 
-**步骤 1**：克隆 fishros 仿真项目并编译
+**步骤 1**：克隆 ros2_patrol_robot 仿真项目并编译
 
 ```bash
 cd <你的工作区>/src
 git clone https://github.com/fishros/ros2_patrol_robot.git
 cd <你的工作区>
-colcon build --packages-select fishbot_description
+colcon build
 source install/setup.bash
 ```
 
-**步骤 2**：启动 Gazebo 仿真（另开一个终端）
+**步骤 2**：启动 Gazebo 仿真
 
 ```bash
 ros2 launch fishbot_description gazebo.launch.py
@@ -61,7 +61,7 @@ ros2 launch fishbot_description gazebo.launch.py
 
 该命令会启动 Gazebo 世界、FishBot 机器人模型（URDF）、激光雷达（`/scan`）和里程计（`/odom`）。
 
-**步骤 3**：启动路网导航（再开一个终端）
+**步骤 3**：启动路网导航
 
 `gazebo_route_navigation.launch.py` 会自动拉起完整 Nav2 栈 + 路网节点 `route_navigator_node`，默认 `use_sim_time:=true`：
 
@@ -85,7 +85,7 @@ ros2 launch route_planner route_navigation.launch.py \
   allow_offroad:=true
 ```
 
-依赖 `mycar_nav2`、`turn_on_wheeltec_robot` 两个配套包（含底盘驱动与实车参数），仅 mycar 整车使用。
+注意：依赖底盘等硬件驱动
 
 ### Nav2 配置要求
 
@@ -96,19 +96,15 @@ ros2 launch route_planner route_navigation.launch.py \
 ### 启动后验证
 
 ```bash
-# 方式一：应看到 route_planner_node
-# 方式二：应看到 route_navigator_node + map_server + amcl + planner_server + controller_server
 ros2 node list
-
-# 两个 action 必须存在
-ros2 action list | grep -E "compute_path_to_pose|follow_path"
-
-# RViz 用 "2D Goal Pose" 点目标，机器人应沿路网行驶
+# 应看到 route_planner_node
 ```
 
 ## 使用
 
-RViz 中用 **"2D Goal Pose"** 点目标位置并拖箭头设朝向。
+RViz 中添加 `route_graph_markers`（MarkerArray）话题和 2D Goal Pose 工具
+
+使用 **"2D Goal Pose"** 点目标位置并拖箭头设朝向。
 
 - 纯路网模式（`allow_offroad:=false`）：路网外目标被拒绝
 - 三段式模式（`allow_offroad:=true`）：允许自由上下路
@@ -134,7 +130,7 @@ python3 src/route_planner/route_editor.py
 
 | 参数 | 默认值 | 说明 |
 |---|---|---|
-| `route_file` | `""` | GeoJSON 路径，留空自动查找 |
+| `route_file` | `""` | GeoJSON 路径 |
 | `map_frame` | `map` | 地图坐标系 |
 | `robot_base_frame` | `base_link` | 机器人 base 坐标系 |
 | `algorithm` | `astar` | 规划算法（astar/dijkstra） |
@@ -149,9 +145,9 @@ python3 src/route_planner/route_editor.py
 
 | 参数 | 默认值 | 说明 |
 |---|---|---|
-| `replan_enabled` | `true` | 总开关 |
+| `replan_enabled` | `true` | 是否启用重规划功能 |
 | `replan_trigger_mode` | `both` | 触发模式：both/monitor/failure |
-| `cost_threshold` | `60` | 单点代价阈值（0~255） |
+| `cost_threshold` | `60` | 单点代价判定阈值 |
 | `path_obstacles_threshold` | `2` | 前方高代价点数触发阈值 |
 | `cost_lookahead` | `1.5` | 前方检测距离（米） |
 | `monitor_hz` | `2.0` | 监控频率（Hz） |
