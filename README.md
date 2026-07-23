@@ -1,6 +1,10 @@
 # route_planner — 路网约束导航功能包
 
-Nav2 附加导航层，让机器人沿预定义路网行驶。版本 2.0.0 | ROS2 Humble | Apache-2.0
+Nav2 附加导航层，让机器人沿预定义路网行驶  版本 2.0.0 | ROS2 Humble | Apache-2.0
+
+## 效果演示
+
+【ROS2路网规划导航-哔哩哔哩】 https://b23.tv/qYzpKwO
 
 ## 快速开始
 
@@ -21,32 +25,61 @@ source install/setup.bash
 
 ### 启动方式
 
-**方式一：接入已有 Nav2 栈（推荐）**
+**方式一：仅路网节点（需自备 Nav2 栈）**
 
-先启动 Nav2 栈（不启动 `bt_navigator`），然后：
-
-```bash
-ros2 launch route_planner route_planner.launch.py route_file:=/path/to/routes.geojson
-```
-
-**方式二：使用本包自带 Nav2 全栈**
+先启动已有 Nav2 栈（map_server + amcl + planner_server + controller_server，**不启动 bt_navigator**），再启动本包：
 
 ```bash
-# 先启动机器人本体（URDF+激光等）
-ros2 launch route_planner gazebo_route_navigation.launch.py
+ros2 launch route_planner route_planner.launch.py \
+  route_file:=/path/to/routes.geojson \
+  algorithm:=astar
 ```
+
+此 launch 仅注册路网节点 `route_planner_node`，不自带 Nav2。
+
+**方式二：Gazebo 仿真（自带 Nav2 全栈）**
+
+`gazebo_route_navigation.launch.py` 会自动拉起完整 Nav2 栈（map_server / amcl / planner_server / controller_server 等，不含 bt_navigator）+ 路网节点 `route_navigator_node`，默认 `use_sim_time:=true`：
+
+```bash
+# 先启动 Gazebo 仿真中的机器人本体（URDF + 激光 /scan + 里程计 /odom），例如：
+#   ros2 launch <你的机器人包> gazebo_sim.launch.py
+ros2 launch route_planner gazebo_route_navigation.launch.py \
+  route_file:=/path/to/routes.geojson \
+  allow_offroad:=true
+```
+
+默认使用包内 `maps/sim_room.yaml` 地图、`config/nav2_params_sim.yaml` 参数、`routes/warehouse_routes.geojson` 路网。
+
+**方式三：实车导航（mycar 整车）**
+
+`route_navigation.launch.py` 面向实车，会拉起底盘驱动、激光雷达、摄像头以及完整 Nav2 栈 + 路网节点：
+
+```bash
+ros2 launch route_planner route_navigation.launch.py \
+  route_file:=/path/to/routes.geojson \
+  allow_offroad:=true
+```
+
+依赖 `mycar_nav2`、`turn_on_wheeltec_robot` 两个配套包（含底盘驱动与实车参数），仅 mycar 整车使用。
 
 ### Nav2 配置要求
 
-1. `controller_server` 需含 `FollowPath`（DWB）和 `FollowPathRPP`（RPP）两个插件
-2. 全局代价地图需设 `always_send_full_costmap: true`，配 `obstacle_layer` 接激光
-3. 节点订阅 `/global_costmap/costmap_raw`（非 `/global_costmap/costmap`）
+1. `controller_server` 需同时加载 `FollowPath`（DWB，上下路用）和 `FollowPathRPP`（RPP，路网段用）两个插件
+2. 全局代价地图需设 `always_send_full_costmap: true`，并配 `obstacle_layer` 接 `/scan` 激光
+3. 路网节点订阅 `/global_costmap/costmap_raw`（nav2_msgs/Costmap，0~255），非 `/global_costmap/costmap`（OccupancyGrid，0~100）
 
-### 验证
+### 启动后验证
 
 ```bash
-ros2 node list  # 应看到 route_navigator_node
+# 方式一：应看到 route_planner_node
+# 方式二：应看到 route_navigator_node + map_server + amcl + planner_server + controller_server
+ros2 node list
+
+# 两个 action 必须存在
 ros2 action list | grep -E "compute_path_to_pose|follow_path"
+
+# RViz 用 "2D Goal Pose" 点目标，机器人应沿路网行驶
 ```
 
 ## 使用
@@ -129,16 +162,6 @@ python3 src/route_planner/route_editor.py \
 ```
 
 coordinates 为 `[x, y, z]`（米），边 `bidirectional: true` 表示双向通行。
-
-## 常见问题
-
-**节点起不来**：确认 Nav2 栈已运行且 action 可用（不启动 `bt_navigator`）
-
-**重规划不触发**：检查日志是否收到代价地图，确认 `obstacle_layer` 配置，或改用 `failure` 模式
-
-**禁用路网约束**：设 `enabled: false`
-
-**坐标系不同**：修改 `robot_base_frame` 参数
 
 ## 许可证
 
