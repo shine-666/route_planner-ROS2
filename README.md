@@ -63,11 +63,11 @@ source install/setup.bash
 ros2 launch fishbot_description gazebo.launch.py
 ```
 
-该命令会启动 Gazebo 世界、FishBot 机器人模型（URDF）、激光雷达（`/scan`）和里程计（`/odom`）。
+该命令会启动 Gazebo 、机器人模型、激光雷达（`/scan`）和里程计（`/odom`）
 
 **步骤 3**：启动路网导航
 
-`gazebo_route_navigation.launch.py` 会自动拉起完整 Nav2 栈 + 路网节点 `route_navigator_node`，默认 `use_sim_time:=true`：
+`gazebo_route_navigation.launch.py` 会自动拉起完整 Nav2  + 路网节点 `route_navigator_node`，默认 `use_sim_time:=true`：
 
 ```bash
 ros2 launch route_planner gazebo_route_navigation.launch.py
@@ -99,7 +99,7 @@ ros2 launch route_planner route_navigation.launch.py
 
 1. `controller_server` 需同时加载 `FollowPath`（DWB，上下路用）和 `FollowPathRPP`（RPP，路网段用）两个插件
 2. 全局代价地图需设 `always_send_full_costmap: true`，并配 `obstacle_layer` 接 `/scan` 激光
-3. 路网节点订阅 `/global_costmap/costmap_raw`（nav2\_msgs/Costmap，0\~255），非 `/global_costmap/costmap`（OccupancyGrid，0\~100）
+3. 路网节点订阅 `/global_costmap/costmap_raw`
 
 ### 启动后验证
 
@@ -125,7 +125,7 @@ python3 src/route_planner/route_editor.py
 
 可在图形界面打开地图和路网文件进行编辑
 
-操作：点击添加节点 | 依次点两节点添加边 | 拖拽移动 | Delete 删除 | 双击编辑名称 | 保存
+操作：点击添加节点 | 依次点两节点添加边 | 拖拽移动 | 删除 | 双击编辑名称 | 保存
 
 ## 参数配置
 
